@@ -29,7 +29,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findByUsername_shouldReturnSavedUser() git{
+    public void findByUsername_shouldReturnSavedUser() {
         final String username = "ehsan1222";
         final String password = "password";
         final String fullName = "ehsan maddahi";
