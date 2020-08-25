@@ -1,24 +1,26 @@
 package ir.hamyblog.entities;
 
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class User {
 
     @Id
-    private final UUID uuid;
+    @EqualsAndHashCode.Include
+    private UUID uuid;
 
     @Column(unique = true)
     private String username;
     private String password;
     private String fullName;
-
-    public User() {
-        uuid = UUID.randomUUID();
-    }
 
     public User(String username, String password, String fullName) {
         uuid = UUID.randomUUID();
