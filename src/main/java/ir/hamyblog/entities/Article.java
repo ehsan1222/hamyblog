@@ -40,7 +40,4 @@ public class Article {
         this.comments.add(comment);
     }
 
-    public void removeComment(UUID commentUid) {
-        this.comments.removeIf(comment -> comment.getUuid().equals(commentUid));
-    }
 }
