@@ -1,6 +1,7 @@
 package ir.hamyblog.entities;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
+@Getter
 public class User {
 
     @Id
@@ -21,27 +23,21 @@ public class User {
     private String username;
     private String password;
     private String fullName;
+    private String secretKey;
 
-    public User(String username, String password, String fullName) {
+    public User(String username, String password, String fullName, String secretKey) {
         uuid = UUID.randomUUID();
         this.username = username;
         this.password = password;
         this.fullName = fullName;
+        this.secretKey = secretKey;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFullName() {
-        return fullName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
