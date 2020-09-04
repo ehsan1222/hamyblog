@@ -1,37 +1,57 @@
 package ir.hamyblog.services;
 
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import ir.hamyblog.entities.User;
 import ir.hamyblog.exceptions.UserNotExistException;
 import ir.hamyblog.exceptions.UsernameAlreadyExistException;
+import ir.hamyblog.model.Role;
 import ir.hamyblog.model.UserRegisterIn;
 import ir.hamyblog.repositories.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User addUser(UserRegisterIn userRegisterIn) {
         // check username not exists
         String username = userRegisterIn.getUsername();
-        String password = userRegisterIn.getPassword();
+        String password = passwordEncoder.encode(userRegisterIn.getPassword());
         String fullName = userRegisterIn.getFullName();
         final Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             throw new UsernameAlreadyExistException("username already exist " + username);
         }
-        User user = new User(username, password, fullName);
+
+        String bas64EncodedSecretKey = createSecretKey();
+
+        User user = new User(username, password, fullName, bas64EncodedSecretKey);
         userRepository.save(user);
         return user;
     }
 
+    public User updateRole(String username, Role role) {
+        User user = this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("username not found " + username));
+
+        user.setRole(role);
+        return userRepository.save(user);
+    }
 
     public User getUserByUsername(String username) {
         final Optional<User> optionalUser = userRepository.findByUsername(username);
@@ -39,5 +59,11 @@ public class UserService {
             throw new UserNotExistException("username not exist " + username);
         }
         return optionalUser.get();
+    }
+
+
+    private String createSecretKey() {
+        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }
 }
