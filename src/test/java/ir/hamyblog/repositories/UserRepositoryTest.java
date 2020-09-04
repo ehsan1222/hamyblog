@@ -33,7 +33,7 @@ public class UserRepositoryTest {
         final String username = "ehsan1222";
         final String password = "password";
         final String fullName = "ehsan maddahi";
-        User expectedUser = new User(username, password, fullName);
+        User expectedUser = new User(username, password, fullName, "");
         testEntityManager.persist(expectedUser);
 
         final Optional<User> optionalUser = userRepository.findByUsername(username);

@@ -47,7 +47,7 @@ public class ArticleRepositoryTest {
     @Test
     public void shouldSaveNewComment() {
         final Article article = new Article("test", UUID.randomUUID(), "this is content");
-        User user = new User("ehsan", "passowrd", "ehsan maddahi");
+        User user = new User("ehsan", "passowrd", "ehsan maddahi", null);
         manager.persist(article);
         manager.persist(user);
 

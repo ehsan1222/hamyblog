@@ -31,7 +31,7 @@ public class CommentRepositoryTest {
     @Test
     public void shouldRemoveCommentAfterRemoveArticle(){
         Article article = new Article("titie", UUID.randomUUID(), "content");
-        User user = new User("usernmae", "password", "ehsan maddahi");
+        User user = new User("usernmae", "password", "ehsan maddahi", "");
         manager.persist(article);
         manager.persist(user);
 
@@ -47,7 +47,7 @@ public class CommentRepositoryTest {
     @Test
     public void shouldChangeLastModifiedDateAfterCommentChanged() {
         Article article = new Article("titie", UUID.randomUUID(), "content");
-        User user = new User("usernmae", "password", "ehsan maddahi");
+        User user = new User("usernmae", "password", "ehsan maddahi", "");
         manager.persist(article);
         manager.persist(user);
 
