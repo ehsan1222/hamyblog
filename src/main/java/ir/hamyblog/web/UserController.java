@@ -1,6 +1,7 @@
 package ir.hamyblog.web;
 
 import ir.hamyblog.entities.User;
+import ir.hamyblog.model.Role;
 import ir.hamyblog.model.UserRegisterIn;
 import ir.hamyblog.services.HamyblogUserDetails;
 import ir.hamyblog.services.UserService;
@@ -32,12 +33,19 @@ public class UserController {
     public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username,
                                                   Authentication authentication) {
         boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().contains("ROLE_ADMIN"));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
 
         if (authentication.getName().equals(username) || isAdmin) {
             User user = userService.getUserByUsername(username);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PutMapping("/users/{username}/role/{role}")
+    public ResponseEntity<User> changeUserRole(@PathVariable("username") String username,
+                                               @PathVariable("role") String role) {
+        User user = userService.updateRole(username, role);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

@@ -45,11 +45,19 @@ public class UserService {
         return user;
     }
 
-    public User updateRole(String username, Role role) {
+    public User updateRole(String username, String newStrRole) {
         User user = this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("username not found " + username));
 
-        user.setRole(role);
+        Role newRole;
+        try {
+
+            newRole = Role.valueOf(newStrRole.toUpperCase());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("invalid role " + newStrRole);
+        }
+
+        user.setRole(newRole);
         return userRepository.save(user);
     }
 
