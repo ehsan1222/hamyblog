@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import ir.hamyblog.services.HamyblogUserDetails;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(requestToken.getUsername(), requestToken.getPassword());
             return this.authenticationManager.authenticate(token);
         } catch (IOException e) {
-            throw new RuntimeException("Error in reading request body");
+            throw new AuthenticationCredentialsNotFoundException("Error in reading request body");
         }
     }
 
@@ -52,7 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication authResult) {
         if (authResult.getPrincipal() instanceof HamyblogUserDetails) {
             HamyblogUserDetails principal = (HamyblogUserDetails) authResult.getPrincipal();
 
