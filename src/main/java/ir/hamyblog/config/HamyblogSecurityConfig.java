@@ -5,6 +5,7 @@ import ir.hamyblog.security.JwtAuthenticationFilter;
 import ir.hamyblog.security.JwtAuthorizationFilter;
 import ir.hamyblog.services.UserService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,7 +28,10 @@ public class HamyblogSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                    .anyRequest().authenticated()
+                .antMatchers(HttpMethod.PUT, "/users/{username}/role/**")
+                    .hasRole("ADMIN")
+                .anyRequest()
+                    .authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(objectMapper, authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userService))
