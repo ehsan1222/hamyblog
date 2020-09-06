@@ -1,5 +1,8 @@
 package ir.hamyblog.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,17 +25,23 @@ public class Article {
     private String title;
     private UUID imageUid;
 
-    @Lob
+    @Column(columnDefinition = "TEXT ")
     private String content;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JsonIgnoreProperties({"uuid", "role"})
+    private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private final List<Comment> comments = new ArrayList<>();
 
-    public Article(String title, UUID imageUid, String content) {
+    public Article(String title, UUID imageUid, String content, User user) {
         this.uuid = UUID.randomUUID();
         this.title = title;
         this.imageUid = imageUid;
         this.content = content;
+        this.user = user;
     }
 
     public void newComment(Comment comment) {
