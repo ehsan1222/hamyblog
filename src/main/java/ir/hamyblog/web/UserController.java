@@ -2,20 +2,15 @@ package ir.hamyblog.web;
 
 import ir.hamyblog.entities.User;
 import ir.hamyblog.model.PasswordIn;
-import ir.hamyblog.model.Role;
 import ir.hamyblog.model.UserRegisterIn;
-import ir.hamyblog.services.HamyblogUserDetails;
 import ir.hamyblog.services.UserService;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Log4j2
 public class UserController {
 
     private final UserService userService;
@@ -54,12 +49,8 @@ public class UserController {
     public ResponseEntity<?> changePassword(@PathVariable("username") String username,
                                             @RequestBody PasswordIn passwordIn,
                                             Authentication authentication) {
-
-        log.info("oldPassword: {}", passwordIn.getOldPassword());
-        log.info("newPassword: {}", passwordIn.getNewPassword());
-
         if (authentication!= null && authentication.getName().equals(username)) {
-            userService.changePassword(username, passwordIn);
+            userService.updatePassword(username, passwordIn);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);

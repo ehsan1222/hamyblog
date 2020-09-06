@@ -63,16 +63,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserByUsername(String username) {
-        final Optional<User> optionalUser = userRepository.findByUsername(username);
-        if (optionalUser.isEmpty()) {
-            throw new UserNotExistException("username not exist " + username);
-        }
-        return optionalUser.get();
-    }
-
-
-    public void changePassword(String username, PasswordIn passwordIn) {
+    public void updatePassword(String username, PasswordIn passwordIn) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("username not found " + username));
 
@@ -84,6 +75,14 @@ public class UserService {
         } else {
             throw new UsernamePasswordNotMatchException("password not match");
         }
+    }
+
+    public User getUserByUsername(String username) {
+        final Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotExistException("username not exist " + username);
+        }
+        return optionalUser.get();
     }
 
     private String createSecretKey() {

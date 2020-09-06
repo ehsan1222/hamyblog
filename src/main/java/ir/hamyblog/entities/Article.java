@@ -5,10 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +21,8 @@ public class Article {
     private UUID uuid;
     private String title;
     private UUID imageUid;
+
+    @Lob
     private String content;
 
     @OneToMany(cascade = CascadeType.ALL)
