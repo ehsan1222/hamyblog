@@ -1,6 +1,7 @@
 package ir.hamyblog.web;
 
 import ir.hamyblog.entities.User;
+import ir.hamyblog.model.PasswordIn;
 import ir.hamyblog.model.Role;
 import ir.hamyblog.model.UserRegisterIn;
 import ir.hamyblog.services.HamyblogUserDetails;
@@ -39,7 +40,7 @@ public class UserController {
             User user = userService.getUserByUsername(username);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PutMapping("/users/{username}/role/{role}")
@@ -47,5 +48,20 @@ public class UserController {
                                                @PathVariable("role") String role) {
         User user = userService.updateRole(username, role);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PutMapping("/users/{username}/password")
+    public ResponseEntity<?> changePassword(@PathVariable("username") String username,
+                                            @RequestBody PasswordIn passwordIn,
+                                            Authentication authentication) {
+
+        log.info("oldPassword: {}", passwordIn.getOldPassword());
+        log.info("newPassword: {}", passwordIn.getNewPassword());
+
+        if (authentication!= null && authentication.getName().equals(username)) {
+            userService.changePassword(username, passwordIn);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }

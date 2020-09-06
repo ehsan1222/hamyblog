@@ -5,6 +5,8 @@ import io.jsonwebtoken.security.Keys;
 import ir.hamyblog.entities.User;
 import ir.hamyblog.exceptions.UserNotExistException;
 import ir.hamyblog.exceptions.UsernameAlreadyExistException;
+import ir.hamyblog.exceptions.UsernamePasswordNotMatchException;
+import ir.hamyblog.model.PasswordIn;
 import ir.hamyblog.model.Role;
 import ir.hamyblog.model.UserRegisterIn;
 import ir.hamyblog.repositories.UserRepository;
@@ -69,6 +71,20 @@ public class UserService {
         return optionalUser.get();
     }
 
+
+    public void changePassword(String username, PasswordIn passwordIn) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("username not found " + username));
+
+        if (passwordEncoder.matches(passwordIn.getOldPassword(), user.getPassword())) {
+            user.setPassword(
+                    passwordEncoder.encode(passwordIn.getNewPassword())
+            );
+            userRepository.save(user);
+        } else {
+            throw new UsernamePasswordNotMatchException("password not match");
+        }
+    }
 
     private String createSecretKey() {
         SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
