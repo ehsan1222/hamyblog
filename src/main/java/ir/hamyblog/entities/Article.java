@@ -1,5 +1,6 @@
 package ir.hamyblog.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +27,10 @@ public class Article {
     private String title;
     private UUID imageUid;
 
-    @Column(columnDefinition = "TEXT ")
+    @JsonFormat(timezone = "Asia/Tehran", pattern = "yyyy-MM-dd HH:mm")
+    private Date creationDate;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne
@@ -42,6 +47,7 @@ public class Article {
         this.imageUid = imageUid;
         this.content = content;
         this.user = user;
+        this.creationDate = new Date();
     }
 
     public void newComment(Comment comment) {
