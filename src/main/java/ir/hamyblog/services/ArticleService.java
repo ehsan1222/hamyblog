@@ -2,7 +2,7 @@ package ir.hamyblog.services;
 
 import ir.hamyblog.entities.Article;
 import ir.hamyblog.entities.User;
-import ir.hamyblog.model.ArticlesOut;
+import ir.hamyblog.model.ArticlesListOut;
 import ir.hamyblog.repositories.ArticleRepository;
 import ir.hamyblog.services.io.StorageService;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public ArticlesOut getArticlesByPageNumber(int pageNumber) {
+    public ArticlesListOut getArticlesByPageNumber(int pageNumber) {
         int pageNumberInPageable = pageNumber - 1;
         Page<Article> articlePage = articleRepository
                 .findAll(PageRequest.of(
@@ -47,6 +47,6 @@ public class ArticleService {
                         Sort.by("creationDate").descending())
                 );
         List<Article> articles = articlePage.get().collect(Collectors.toList());
-        return new ArticlesOut(articlePage.getTotalPages(), pageNumber, articles);
+        return new ArticlesListOut(articlePage.getTotalPages(), pageNumber, articles);
     }
 }
