@@ -2,6 +2,7 @@ package ir.hamyblog.services.io;
 
 import ir.hamyblog.exceptions.FileException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @Log4j2
@@ -39,6 +43,21 @@ public class StorageService {
     }
 
 
+    public File get(UUID uid) {
+        createDirectoryIfNotExists(BASE_PATH);
+        try {
+            Optional<File> fileOptional = Stream.of(Objects.requireNonNull(new File(BASE_PATH).listFiles()))
+                    .filter(file -> file.getName().contains(uid.toString()))
+                    .findFirst();
+            if (fileOptional.isPresent()) {
+                return fileOptional.get();
+            }
+        }catch (NullPointerException e) {
+            throw new RuntimeException();
+        }
+        return null;
+    }
+
     private String getFileExtension(String originalFilename) {
         int lastIndexOf = originalFilename.lastIndexOf(".");
         if (lastIndexOf > 0) {
@@ -52,5 +71,4 @@ public class StorageService {
             new File(base_path).mkdirs();
         }
     }
-
 }
