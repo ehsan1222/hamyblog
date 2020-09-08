@@ -1,6 +1,7 @@
 package ir.hamyblog.services;
 
 import ir.hamyblog.entities.Article;
+import ir.hamyblog.entities.Comment;
 import ir.hamyblog.entities.User;
 import ir.hamyblog.exceptions.FileException;
 import ir.hamyblog.exceptions.FileNotFoundException;
@@ -70,6 +71,11 @@ public class ArticleService {
         } catch (IOException e) {
             throw new FileException();
         }
+    }
+
+    public void addComment(Article article, Comment comment) {
+        article.newComment(comment);
+        articleRepository.save(article);
     }
 
     public Article getArticle(UUID uid) {
