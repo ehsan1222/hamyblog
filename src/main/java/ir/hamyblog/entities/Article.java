@@ -37,7 +37,7 @@ public class Article {
     @JsonIgnoreProperties({"uuid", "role"})
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
     @JsonIgnore
     private final List<Comment> comments = new ArrayList<>();
 
