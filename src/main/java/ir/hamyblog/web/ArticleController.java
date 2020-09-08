@@ -4,9 +4,7 @@ import ir.hamyblog.entities.Article;
 import ir.hamyblog.model.ArticlesListOut;
 import ir.hamyblog.services.ArticleService;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
@@ -14,14 +12,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 
 @RestController
 @Validated
+@RequestMapping(
+        path = "/articles"
+)
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -30,7 +29,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @PostMapping("/articles")
+    @PostMapping
     public ResponseEntity<Article> addArticle(@RequestParam("title") @NonNull String title,
                                               @RequestParam("content") @NonNull String content,
                                               @RequestBody @NonNull MultipartFile pic,
@@ -40,17 +39,23 @@ public class ArticleController {
         return new ResponseEntity<>(article, HttpStatus.CREATED);
     }
 
-    @GetMapping("/articles")
+    @GetMapping
     public ResponseEntity<ArticlesListOut> getArticles(@RequestParam("page") Integer page) {
         ArticlesListOut articlesListOut = articleService.getArticlesByPageNumber(page);
         return new ResponseEntity<>(articlesListOut, HttpStatus.OK);
     }
 
-    @GetMapping("/articles/image/{uid}")
-    public ResponseEntity<Resource> getArticleImage(@PathVariable("uid") UUID uid) throws IOException {
+    @GetMapping("/image/{uid}")
+    public ResponseEntity<Resource> getArticleImage(@PathVariable("uid") UUID uid) {
         ArticleService.ImageOutput imageOutput = articleService.getArticleImage(uid);
         return ResponseEntity.ok()
                 .header(CONTENT_DISPOSITION, "attachment; filename=\"" + imageOutput.getFilename() + "\"")
                 .body(imageOutput.getResource());
+    }
+
+    @GetMapping("/{uid}")
+    public ResponseEntity<Article> getArticle(@PathVariable("uid") UUID uid) {
+        Article article = articleService.getArticle(uid);
+        return new ResponseEntity<>(article, HttpStatus.OK);
     }
 }

@@ -72,6 +72,13 @@ public class ArticleService {
         }
     }
 
+    public Article getArticle(UUID uid) {
+        return articleRepository.findById(uid)
+                .orElseThrow(
+                        () -> new FileNotFoundException("article not found, " + uid)
+                );
+    }
+
     @AllArgsConstructor
     @Getter
     public class ImageOutput {
