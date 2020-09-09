@@ -32,7 +32,7 @@ public class HamyblogSecurityConfig extends WebSecurityConfigurerAdapter {
                     .hasRole("ADMIN")
                 .antMatchers("/users/**")
                     .authenticated()
-                .antMatchers(HttpMethod.POST, "/articles")
+                .antMatchers(HttpMethod.POST, "/articles", "/comments")
                     .authenticated()
                 .anyRequest()
                     .permitAll()
