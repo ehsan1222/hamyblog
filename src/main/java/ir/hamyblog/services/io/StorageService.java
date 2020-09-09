@@ -27,9 +27,11 @@ public class StorageService {
         UUID filename = UUID.randomUUID();
         try {
             String extension = getFileExtension(file.getOriginalFilename());
-            String target = BASE_PATH.concat(filename.toString()).concat(
-                            ((!extension.equals("")) ? ("." + extension) : "")
-                    );
+            if (!(extension.contains("jpg") || extension.contains("jpeg") || extension.contains("png"))) {
+                throw new FileException("invalid file extension, valid extensions = {jpg, jpeg, png} but send " + extension);
+            }
+
+            String target = BASE_PATH.concat(filename.toString()).concat("." + extension);
 
             createDirectoryIfNotExists(BASE_PATH);
 
