@@ -5,10 +5,10 @@ import ir.hamyblog.model.CommentIn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(
@@ -26,6 +26,12 @@ public class CommentController {
     public ResponseEntity<Comment> addComment(@RequestBody CommentIn commentIn, Authentication authentication) {
         Comment comment = commentService.addComment(commentIn.getUid(), authentication.getName(), commentIn.getContent());
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{articleId}")
+    public ResponseEntity<List<Comment>> getArticleComments(@PathVariable("articleId") UUID articleUid) {
+        List<Comment> comments = commentService.getComments(articleUid);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
 }

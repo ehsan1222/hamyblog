@@ -8,6 +8,7 @@ import ir.hamyblog.services.ArticleService;
 import ir.hamyblog.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,4 +36,8 @@ public class CommentService {
         return comment;
     }
 
+    public List<Comment> getComments(UUID articleUid) {
+        Article article = articleService.getArticle(articleUid);
+        return commentRepository.findByArticleOrderByCreationDateDesc(article);
+    }
 }
