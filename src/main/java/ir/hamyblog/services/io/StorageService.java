@@ -1,6 +1,7 @@
 package ir.hamyblog.services.io;
 
 import ir.hamyblog.exceptions.FileException;
+import ir.hamyblog.exceptions.FileNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -58,6 +60,22 @@ public class StorageService {
             throw new RuntimeException();
         }
         return null;
+    }
+
+    public void remove(UUID imageUid) {
+        if (imageUid == null){
+            return;
+        }
+        Path removedPath = Stream.of(Objects.requireNonNull(new File(BASE_PATH).listFiles()))
+                .filter(file -> file.getName().contains(imageUid.toString()))
+                .map(file -> Paths.get(file.getAbsolutePath()))
+                .findFirst().orElseThrow(() -> new FileNotFoundException(""));
+
+        try {
+            Files.deleteIfExists(removedPath);
+        } catch (IOException e) {
+            throw new FileException("internal error, error = " + e.getMessage());
+        }
     }
 
     private String getFileExtension(String originalFilename) {
