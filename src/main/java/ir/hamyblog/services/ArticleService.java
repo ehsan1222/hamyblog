@@ -11,7 +11,6 @@ import ir.hamyblog.services.io.StorageService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,10 +42,16 @@ public class ArticleService {
     }
 
     public Article addArticle(String username, String title, String content, MultipartFile pic) {
-        User user = userService.getUserByUsername(username);
-        UUID imageUid = storageService.store(pic);
-        Article article = new Article(title, imageUid, content, user);
+        UUID imageUid = null;
+        try {
+            User user = userService.getUserByUsername(username);
+            imageUid = storageService.store(pic);
+            Article article = new Article(title, imageUid, content, user);
         return articleRepository.save(article);
+        } catch (Exception e) {
+            storageService.remove(imageUid);
+            throw new FileException();
+        }
     }
 
     public ArticlesListOut getArticlesByPageNumber(int pageNumber) {
